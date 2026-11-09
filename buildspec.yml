@@ -1,20 +1,30 @@
 ﻿version: 0.2
+
 phases:
   install:
     runtime-versions:
       java: corretto17
+
   pre_build:
     commands:
       - echo "Starting build"
       - ls -la
+
   build:
     commands:
-      - mvn clean package -DskipTests
+      - mvn clean test
+      - mvn package
+
   post_build:
     commands:
       - echo "Build completed"
+      - cp target/*.jar ./
+      - cp appspec.yml ./
+      - cp -R scripts ./
+
 artifacts:
   files:
-    - target/*.jar
-    - buildspec.yml
+    - '*.jar'
+    - 'appspec.yml'
+    - 'scripts/**/*'
   discard-paths: yes
