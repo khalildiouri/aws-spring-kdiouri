@@ -9,22 +9,22 @@ phases:
     commands:
       - echo "Starting build"
       - ls -la
+      - if [ -f appspec.yml ]; then echo "appspec.yml present"; else echo "ERROR: appspec.yml missing at repo root"; exit 1; fi
+      - if [ -d scripts ]; then echo "scripts folder present"; else echo "ERROR: scripts folder missing at repo root"; exit 1; fi
 
   build:
     commands:
       - mvn clean test
       - mvn package
+      - chmod +x scripts/*.sh
 
   post_build:
     commands:
       - echo "Build completed"
-      - cp target/*.jar ./
-      - cp appspec.yml ./
-      - cp -R scripts ./
 
 artifacts:
   files:
-    - '*.jar'
-    - 'appspec.yml'
-    - 'scripts/**/*'
+    - target/*.jar
+    - appspec.yml
+    - scripts/**/*
   discard-paths: yes
